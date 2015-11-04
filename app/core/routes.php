@@ -22,7 +22,7 @@ $app->post('/items', function () use ($app) {
     try {
         $app['db']->insert('items', array(
             'text' => $data['text'],
-            'order' => 999,
+            '`order`' => 999,
         ));
     } catch(\Exception $e) {
         return $app->json(array(
