@@ -19,9 +19,18 @@ $app->get('/items', function () use ($app) {
 $app->post('/items', function () use ($app) {
     $data = $app['request']->request->all();
 
-    $app['db']->insert('items', array(
-        'id' => $id,
-    ));
+    try {
+        $app['db']->insert('items', array(
+            'text' => $data['text'],
+            'order' => 999,
+        ));
+    } catch(\Exception $e) {
+        return $app->json(array(
+            'error' => array(
+                'message' => $e->getMessage(),
+            ),
+        ));
+    }
 
     return $app->json(array(
         'success' => true,
@@ -32,9 +41,17 @@ $app->post('/items', function () use ($app) {
 $app->put('/items/{id}', function ($id) use ($app) {
     $data = $app['request']->request->all();
 
-    $app['db']->update('items', $data, array(
-        'id' => $id,
-    ));
+    try {
+        $app['db']->update('items', $data, array(
+            'id' => $id,
+        ));
+    } catch(\Exception $e) {
+        return $app->json(array(
+            'error' => array(
+                'message' => $e->getMessage(),
+            ),
+        ));
+    }
 
     return $app->json(array(
         'success' => true,
@@ -43,9 +60,17 @@ $app->put('/items/{id}', function ($id) use ($app) {
 
 /***** Remove (delete) *****/
 $app->delete('/items/{id}', function ($id) use ($app) {
-    $app['db']->delete('items', array(
-        'id' => $id,
-    ));
+    try {
+        $app['db']->delete('items', array(
+            'id' => $id,
+        ));
+    } catch(\Exception $e) {
+        return $app->json(array(
+            'error' => array(
+                'message' => $e->getMessage(),
+            ),
+        ));
+    }
 
     return $app->json(array(
         'success' => true,
@@ -63,6 +88,9 @@ $app->get('/database/install', function () use ($app) {
         // ID
         $itemsTable->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
         $itemsTable->setPrimaryKey(array('id'));
+
+        // Text
+        $itemsTable->addColumn('text', 'text');
 
         // Order
         $itemsTable->addColumn('order', 'integer');
