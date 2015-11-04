@@ -1,5 +1,5 @@
 # To-Do List
-A simple Silex + Angular To-Do List.
+A simple To-Do List.
 
 ## Installation
 * Navigate to this directory (cd /var/www/html/to-do-list)
