@@ -1,15 +1,15 @@
 jQuery(document).ready(function() {
     // Load existing
     var itemTemplate = [
-        '<li class="item-list-item" data-id="{item.id}" style="margin-bottom: 10px;">',
+        '<li class="item-list-item" data-id="{item.id}" data-order="{item.order}" style="margin-bottom: 10px;">',
             '<div class="row">',
-                '<div class="col-md-2">',
-                    'REORDER',
+                '<div class="col-xs-1">',
+                    '<i class="glyphicon glyphicon-menu-hamburger" style="margin: 6px auto; font-size: 18px; cursor: pointer; cursor: hand;"></i>',
                 '</div>',
-                '<div class="col-md-8">',
+                '<div class="col-xs-9">',
                     '<input class="form-control item-input" type="text" value="{item.text}" />',
                 '</div>',
-                '<div class="col-md-2">',
+                '<div class="col-xs-2">',
                     '<button class="btn btn-block btn-danger remove-button" type="button">x</button>',
                 '</div>',
             '</div>',
@@ -32,6 +32,7 @@ jQuery(document).ready(function() {
                         var thisItemTemplate = itemTemplate
                             .replace('{item.id}', item.id)
                             .replace('{item.text}', item.text)
+                            .replace('{item.order}', item.order)
                         ;
 
                         jQuery(thisItemTemplate)
@@ -41,6 +42,7 @@ jQuery(document).ready(function() {
 
                     attachRemoveButtonClickEvent();
                     attachEditItemEvent();
+                    attachSortable();
                 }
             }
         });
@@ -71,6 +73,32 @@ jQuery(document).ready(function() {
         return;
     });
 
+    // Sortable
+    function attachSortable() {
+        jQuery('#items-list').sortable({
+            update: function() {
+                var items = jQuery('#items-list > li');
+
+                // Set the items new order
+                for (var i = 0; i < items.length; i++) {
+                    jQuery(items[i]).attr('data-order', i);
+                }
+
+                // Save the order of each item to the database
+                for (var i = 0; i < items.length; i++) {
+                    var id = jQuery(items[i]).attr('data-id');
+                    var text = jQuery(items[i]).find('.item-input').val();
+                    var order = jQuery(items[i]).attr('data-order');
+
+                    saveItemAjaxCall(id, text, order);
+                }
+
+                // Notice: Yes, this is probably not the best solution since it makes x calls to the server
+                // A better option would probably be batch saving.
+            },
+        });
+    }
+
     // Remove
     // Because the items are loaded dynamically, we need to attach the click event after the new items are added to the DOM
     function attachRemoveButtonClickEvent() {
@@ -93,19 +121,23 @@ jQuery(document).ready(function() {
         var saveItem = debounce(function() {
             var id = jQuery(this).closest('.item-list-item').attr('data-id');
             var text = jQuery(this).val();
-            var order = 999; // To-Do
+            var order = jQuery(this).closest('.item-list-item').attr('data-order');
 
-            jQuery.ajax({
-                method: 'PUT',
-                url: 'items/'+id,
-                data: 'text='+text+'&order='+order,
-                success: function(response) {
-                    console.log('Saved');
-                }
-            });
-        }, 500);
+            saveItemAjaxCall(id, text, order);
+        }, 250);
 
         jQuery('.item-input').on('input', saveItem);
+    }
+
+    function saveItemAjaxCall(id, text, order) {
+        jQuery.ajax({
+            method: 'PUT',
+            url: 'items/'+id,
+            data: 'text='+text+'&order='+order,
+            success: function(response) {
+                console.log('Saved');
+            }
+        });
     }
 
     // Helpers
