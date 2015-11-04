@@ -93,8 +93,8 @@ jQuery(document).ready(function() {
                     saveItemAjaxCall(id, text, order);
                 }
 
-                // Notice: Yes, this is probably not the best solution since it makes x calls to the server
-                // A better option would probably be batch saving.
+                // Notice: Yes, this is not the best solution since it makes x calls to the server.
+                // A better option would be batch saving. Maybe To-Do!
             },
         });
     }
