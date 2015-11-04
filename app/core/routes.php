@@ -70,16 +70,18 @@ $app->get('/database/install', function () use ($app) {
         $schema->createTable($itemsTable);
     }
 
-    return new Response(
-        'Database Tables successfully installed!'
-    );
+    return $app->json(array(
+        'success' => true,
+        'message' => 'Database tables installed!',
+    ));
 });
 
 /***** Clear *****/
 $app->get('/database/clear', function () use ($app) {
     $app['db']->query('TRUNCATE TABLE items');
 
-    return new Response(
-        'Database Tables successfully cleared!'
-    );
+    return $app->json(array(
+        'success' => true,
+        'message' => 'Database tables cleared!',
+    ));
 });
