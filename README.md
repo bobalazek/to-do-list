@@ -10,3 +10,6 @@ A simple Silex + Angular To-Do List.
 
 ## Clear database
 To clear the database just go to `http://localhost/to-do-list/database/clear`
+
+## Preview
+![Preview Image](preview.png)
