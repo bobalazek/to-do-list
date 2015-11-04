@@ -11,7 +11,7 @@ $app->get('/', function () use ($app) {
 $app->get('/items', function () use ($app) {
     return $app->json(array(
         'success' => true,
-        'items' => $app['db']->fetchAll('SELECT * FROM items'),
+        'items' => $app['db']->fetchAll('SELECT * FROM items ORDER BY `order`'),
     ));
 });
 
