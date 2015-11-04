@@ -42,7 +42,10 @@ $app->put('/items/{id}', function ($id) use ($app) {
     $data = $app['request']->request->all();
 
     try {
-        $app['db']->update('items', $data, array(
+        $app['db']->update('items', array(
+            'text' => $data['text'],
+            '`order`' => $data['order'],
+        ), array(
             'id' => $id,
         ));
     } catch(\Exception $e) {
