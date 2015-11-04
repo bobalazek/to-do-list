@@ -29,7 +29,7 @@ $app->post('/items', function () use ($app) {
             'error' => array(
                 'message' => $e->getMessage(),
             ),
-        ));
+        ), 500);
     }
 
     return $app->json(array(
@@ -50,7 +50,7 @@ $app->put('/items/{id}', function ($id) use ($app) {
             'error' => array(
                 'message' => $e->getMessage(),
             ),
-        ));
+        ), 500);
     }
 
     return $app->json(array(
@@ -69,7 +69,7 @@ $app->delete('/items/{id}', function ($id) use ($app) {
             'error' => array(
                 'message' => $e->getMessage(),
             ),
-        ));
+        ), 500);
     }
 
     return $app->json(array(
